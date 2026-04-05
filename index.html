@@ -8,11 +8,10 @@
 body {
     margin: 0;
     font-family: Arial;
-    background-color: #eef7f0;
-    background-image: url('https://images.pexels.com/photos/957024/vegetation-grass-bill-957024.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background:
+        linear-gradient(rgba(8, 28, 14, 0.5), rgba(8, 28, 14, 0.5)),
+        url('https://images.unsplash.com/photo-1758184238979-b1d5237d37c7?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=3000') center / cover fixed no-repeat;
+    background-color: #14361d;
     transition: 0.3s;
 }
 
@@ -27,19 +26,42 @@ body {
 }
 
 .panel {
-    background: white;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 12px 30px rgba(4, 20, 8, 0.16);
     padding: 20px;
     border-radius: 10px;
 }
 
 .right {
     width: 320px;
-    background: white;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 12px 30px rgba(4, 20, 8, 0.16);
     padding: 15px;
-    border-left: 1px solid #ddd;
 }
 
 /* calendar */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 6px;
+    font-size: 11px;
+}
+
+.weekday {
+    padding: 4px 0;
+    text-align: center;
+    color: #000000;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -50,14 +72,18 @@ body {
 .day {
     padding: 6px;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     position: relative;
-    background: white;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.18));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #17341f;
 }
 
 .day:hover {
-    background: #d1fae5;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.68), rgba(209, 250, 229, 0.28));
 }
 
 .selected {
@@ -67,6 +93,24 @@ body {
 
 .has-record {
     background: #fee2e2;
+}
+
+.special-day {
+    background: linear-gradient(to bottom, rgba(74, 222, 128, 0.95), rgba(22, 163, 74, 0.95));
+    border-color: rgba(22, 101, 52, 0.42);
+    color: #f0fdf4;
+    font-weight: 700;
+    box-shadow: 0 10px 20px rgba(21, 128, 61, 0.24);
+}
+
+.special-day:hover {
+    background: linear-gradient(to bottom, rgba(110, 231, 183, 0.98), rgba(22, 163, 74, 0.98));
+}
+
+.special-day .weed,
+.special-day .water,
+.special-day .count-badge {
+    color: #f0fdf4;
 }
 
 .count-badge {
@@ -97,12 +141,42 @@ body {
 
 /* button */
 button {
-    background: #16a34a;
+    background:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.12) 32%, rgba(255, 255, 255, 0) 33%),
+        linear-gradient(to bottom, rgba(22, 163, 74, 0.96), rgba(8, 95, 39, 0.92));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: white;
-    border: none;
+    border: 1px solid rgba(187, 247, 208, 0.38);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 14px 30px rgba(3, 22, 9, 0.42);
     padding: 8px 14px;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+button:hover {
+    background:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.16) 34%, rgba(255, 255, 255, 0) 35%),
+        linear-gradient(to bottom, rgba(34, 197, 94, 0.98), rgba(10, 110, 46, 0.95));
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 20px 38px rgba(3, 22, 9, 0.5);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 18px rgba(3, 22, 9, 0.28);
+}
+
+select,
+input[type="number"] {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #17341f;
+    border-radius: 8px;
+    padding: 7px 10px;
 }
 
 .timer {
@@ -131,10 +205,6 @@ button {
 /* 🌙 dark mode */
 .dark body {
     background: #111;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.pexels.com/photos/957024/vegetation-grass-bill-957024.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
 .dark .panel,
@@ -147,8 +217,17 @@ button {
     background: #2a2a2a;
 }
 
+.dark .weekday {
+    color: #d1fae5;
+}
+
 .dark .has-record {
     background: #7f1d1d;
+}
+
+.dark .special-day {
+    background: linear-gradient(to bottom, rgba(34, 197, 94, 0.95), rgba(21, 128, 61, 0.95));
+    color: #f0fdf4;
 }
 
 .dark .record {
@@ -175,8 +254,8 @@ button {
 
 <label>Type:</label>
 <select id="type">
-<option value="weed">🌿 Weed</option>
-<option value="water">💧 Water</option>
+<option value="weed">🌿 Smoke grass</option>
+<option value="water">💧 Drink water</option>
 </select>
 
 <br><br>
@@ -208,6 +287,7 @@ button {
 <div class="right">
 <select id="monthSelect"></select>
 <h3 id="monthTitle"></h3>
+<div class="calendar-weekdays" id="calendarWeekdays"></div>
 <div class="calendar" id="calendar"></div>
 </div>
 
@@ -237,7 +317,13 @@ monthSelect.onchange=()=>{
     generateCalendar();
 };
 
+
 // calendar
+const weekdayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+calendarWeekdays.innerHTML = weekdayLabels
+    .map((label) => `<div class="weekday">${label}</div>`)
+    .join("");
+
 function generateCalendar(){
     calendar.innerHTML="";
     monthTitle.textContent=`${currentYear} / ${currentMonth+1}`;
@@ -253,6 +339,10 @@ function generateCalendar(){
         let div=document.createElement("div");
         div.className="day";
         div.textContent=d;
+
+        if(currentMonth===3 && d===20){
+            div.classList.add("special-day");
+        }
 
         if(data[key]){
             let weed=0, water=0;
@@ -322,7 +412,7 @@ function deleteRecord(i){
         delete data[selectedDate];
     }
 
-    localSstringify(data));
+    localStorage.setItem("logs",JSON.stringify(data));
 
     loadRecords();
     generateCalendar();

@@ -10,7 +10,7 @@ body {
     font-family: Arial;
     background:
         linear-gradient(rgba(8, 28, 14, 0.5), rgba(8, 28, 14, 0.5)),
-        url('https://images.unsplash.com/photo-1758184238979-b1d5237d37c7?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=3000') center / cover fixed no-repeat;
+        url('https://static.vecteezy.com/system/resources/previews/072/133/246/non_2x/a-misty-forest-path-winds-through-lush-green-vegetation-and-moss-covered-rocks-with-tall-trees-in-the-background-free-photo.jpeg') center / cover fixed no-repeat;
     background-color: #14361d;
     transition: 0.3s;
 }
@@ -80,6 +80,7 @@ body {
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: #17341f;
+    font-weight: 700;
 }
 
 .day:hover {
@@ -182,10 +183,30 @@ input[type="number"] {
 .timer {
     margin-top: 10px;
     padding: 10px;
-    background: #022c22;
+    background-color: #022c22;
     color: #4ade80;
     font-family: monospace;
     border-radius: 6px;
+    background-size: cover;
+    background-position: center;
+}
+
+.timer.no-records {
+    color: white !important;
+    text-shadow: 1px 1px 3px black;
+    font-weight: bold;
+}
+
+#weedTimer.no-records {
+    background-image: 
+        linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+        url('https://upload.wikimedia.org/wikipedia/commons/5/5e/Bob_Marley_1977_press_photo.jpg');
+}
+
+#waterTimer.no-records {
+    background-image: 
+        linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+        url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Billy_Herrington.jpg');
 }
 
 /* 🌗 theme toggle */
@@ -213,12 +234,19 @@ input[type="number"] {
     color: #eee;
 }
 
-.dark .day {
+.dark select,
+.dark input[type="number"] {
+    color: #4ade80;
     background: #2a2a2a;
 }
 
+.dark .day {
+    background: #2a2a2a;
+    color: #4ade80;
+}
+
 .dark .weekday {
-    color: #d1fae5;
+    color: #4ade80;
 }
 
 .dark .has-record {
@@ -235,7 +263,7 @@ input[type="number"] {
 }
 
 .dark .timer {
-    background: #000;
+    background-color: #000;
     color: #22c55e;
 }
 </style>
@@ -296,6 +324,8 @@ input[type="number"] {
 <script>
 
 // time dropdown
+const hour = document.getElementById("hour");
+const minute = document.getElementById("minute");
 for (let h=0; h<24; h++) hour.innerHTML += `<option value="${h}">${h}</option>`;
 for (let m=0; m<60; m+=5) minute.innerHTML += `<option value="${m}">${m.toString().padStart(2,'0')}</option>`;
 
@@ -303,11 +333,13 @@ for (let m=0; m<60; m+=5) minute.innerHTML += `<option value="${m}">${m.toString
 let selectedDate=null;
 let currentYear=new Date().getFullYear();
 let currentMonth=new Date().getMonth();
+const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // month dropdown
+const monthSelect = document.getElementById("monthSelect");
 for (let i=0;i<12;i++){
     let o=document.createElement("option");
-    o.value=i; o.textContent=i+1;
+    o.value=i; o.textContent=monthLabels[i];
     if(i===currentMonth) o.selected=true;
     monthSelect.appendChild(o);
 }
@@ -319,14 +351,17 @@ monthSelect.onchange=()=>{
 
 
 // calendar
+const calendarWeekdays = document.getElementById("calendarWeekdays");
 const weekdayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 calendarWeekdays.innerHTML = weekdayLabels
     .map((label) => `<div class="weekday">${label}</div>`)
     .join("");
 
+const calendar = document.getElementById("calendar");
+const monthTitle = document.getElementById("monthTitle");
 function generateCalendar(){
     calendar.innerHTML="";
-    monthTitle.textContent=`${currentYear} / ${currentMonth+1}`;
+    monthTitle.textContent=`${currentYear} / ${monthLabels[currentMonth]}`;
 
     let first=new Date(currentYear,currentMonth,1).getDay();
     let last=new Date(currentYear,currentMonth+1,0).getDate();
@@ -371,6 +406,7 @@ function generateCalendar(){
 }
 
 // select
+const selectedDateText = document.getElementById("selectedDate");
 function selectDate(date,el){
     document.querySelectorAll(".day").forEach(d=>d.classList.remove("selected"));
     el.classList.add("selected");
@@ -381,6 +417,8 @@ function selectDate(date,el){
 }
 
 // save
+const type = document.getElementById("type");
+const count = document.getElementById("count");
 function saveRecord(){
     if(!selectedDate){alert("Select a date");return;}
 
@@ -416,9 +454,11 @@ function deleteRecord(i){
 
     loadRecords();
     generateCalendar();
+    updateTimers();
 }
 
 // records
+const records = document.getElementById("records");
 function loadRecords(){
     records.innerHTML="";
     let data=JSON.parse(localStorage.getItem("logs")||"{}");
@@ -465,7 +505,13 @@ function updateTimer(type,id,icon){
     let el=document.getElementById(id);
     let last=getLast(type);
 
-    if(!last){el.textContent=`${icon} No records`;return;}
+    if(!last){
+        el.textContent=`${icon} No records`;
+        el.classList.add("no-records");
+        return;
+    }
+    
+    el.classList.remove("no-records");
 
     let diff=new Date()-last;
     let d=Math.floor(diff/(1000*60*60*24));

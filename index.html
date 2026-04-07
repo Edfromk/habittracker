@@ -5,6 +5,10 @@
 <title>Habit Tracker</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: Arial;
@@ -17,7 +21,7 @@ body {
 
 .container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .left {
@@ -26,7 +30,7 @@ body {
 }
 
 .panel {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.12));
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.28);
@@ -37,12 +41,13 @@ body {
 
 .right {
     width: 320px;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.12));
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border-left: 1px solid rgba(255, 255, 255, 0.22);
     box-shadow: 0 12px 30px rgba(4, 20, 8, 0.16);
     padding: 15px;
+    overflow-y: auto;
 }
 
 /* calendar */
@@ -75,7 +80,7 @@ body {
     border-radius: 8px;
     cursor: pointer;
     position: relative;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.18));
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.63), rgba(255, 255, 255, 0.24));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -84,7 +89,7 @@ body {
 }
 
 .day:hover {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.68), rgba(209, 250, 229, 0.28));
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75), rgba(209, 250, 229, 0.34));
 }
 
 .selected {
@@ -186,12 +191,16 @@ input[type="number"] {
 .timer {
     margin-top: 10px;
     padding: 10px;
-    background-color: #022c22;
+    background-color: #14532d;
     color: #4ade80;
     font-family: Arial;
     border-radius: 6px;
     background-size: cover;
     background-position: center;
+}
+
+.timer-number {
+    color: #fff;
 }
 
 .timer.no-records {
@@ -557,19 +566,33 @@ function updateTimers(){
     updateTimer("water","waterTimer","💧");
 }
 
-function formatDurationKorean(totalMinutes){
-    if(totalMinutes <= 0) return "0분";
+function formatUnit(value, singular, plural){
+    return `<span class="timer-number">${value}</span> ${value === 1 ? singular : plural}`;
+}
+
+function formatDurationWords(totalMinutes){
+    if(totalMinutes <= 0) return `${formatUnit(0, "minute", "minutes")}`;
 
     let days = Math.floor(totalMinutes / (60 * 24));
     let hours = Math.floor((totalMinutes % (60 * 24)) / 60);
     let minutes = totalMinutes % 60;
     let parts = [];
 
-    if(days) parts.push(`${days}일`);
-    if(hours) parts.push(`${hours}시간`);
-    if(minutes || parts.length === 0) parts.push(`${minutes}분`);
+    if(days) parts.push(formatUnit(days, "day", "days"));
+    if(hours) parts.push(formatUnit(hours, "hour", "hours"));
+    if(minutes || parts.length === 0) parts.push(formatUnit(minutes, "minute", "minutes"));
 
     return parts.join(" ");
+}
+
+function formatTargetLabel(totalMinutes){
+    if(totalMinutes % (60 * 24) === 0){
+        let days = totalMinutes / (60 * 24);
+        return formatUnit(days, "day", "days");
+    }
+
+    let hours = Math.floor(totalMinutes / 60);
+    return formatUnit(hours, "hour", "hours");
 }
 
 function getNextTargetMinutes(elapsedMinutes){
@@ -597,9 +620,9 @@ function updateTimer(type,id,icon){
     let elapsedMinutes=Math.floor((new Date()-last)/(1000*60));
     let targetMinutes=getNextTargetMinutes(elapsedMinutes);
     let remainingMinutes=targetMinutes-elapsedMinutes;
-    let targetText=formatDurationKorean(targetMinutes);
+    let targetText=formatTargetLabel(targetMinutes);
 
-    el.textContent=`${icon} 이제 ${formatDurationKorean(remainingMinutes)}만 더 참으면 ${targetText}이오`;
+    el.innerHTML=`${icon} ${formatDurationWords(remainingMinutes)} remaining to reach ${targetText}`;
 }
 setInterval(updateTimers,1000);
 

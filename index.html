@@ -97,21 +97,22 @@ body {
 }
 
 .special-day {
-    background: linear-gradient(to bottom, rgba(74, 222, 128, 0.95), rgba(22, 163, 74, 0.95));
-    border-color: rgba(22, 101, 52, 0.42);
-    color: #f0fdf4;
-    font-weight: 700;
-    box-shadow: 0 10px 20px rgba(21, 128, 61, 0.24);
+    background: linear-gradient(to bottom, rgba(220, 252, 231, 0.82), rgba(187, 247, 208, 0.58));
+    border-color: rgba(134, 239, 172, 0.36);
+    color: #991b1b;
+    font-weight: 800;
+    box-shadow: 0 6px 14px rgba(34, 94, 52, 0.12);
 }
 
 .special-day:hover {
-    background: linear-gradient(to bottom, rgba(110, 231, 183, 0.98), rgba(22, 163, 74, 0.98));
+    background: linear-gradient(to bottom, rgba(240, 253, 244, 0.9), rgba(187, 247, 208, 0.66));
 }
 
 .special-day .weed,
 .special-day .water,
 .special-day .count-badge {
-    color: #f0fdf4;
+    color: #991b1b;
+    font-weight: 800;
 }
 
 .count-badge {
@@ -170,6 +171,8 @@ button:active {
 }
 
 select,
+input[type="text"],
+input[type="email"],
 input[type="number"] {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
     backdrop-filter: blur(10px);
@@ -185,7 +188,7 @@ input[type="number"] {
     padding: 10px;
     background-color: #022c22;
     color: #4ade80;
-    font-family: monospace;
+    font-family: Arial;
     border-radius: 6px;
     background-size: cover;
     background-position: center;
@@ -210,10 +213,9 @@ input[type="number"] {
 }
 
 /* 🌗 theme toggle */
-.theme-btn {
+.theme-btn, .account-btn {
     position: fixed;
     top: 15px;
-    right: 15px;
     background: #16a34a;
     color: white;
     border: none;
@@ -221,6 +223,28 @@ input[type="number"] {
     border-radius: 6px;
     cursor: pointer;
     z-index: 999;
+}
+
+.theme-btn {
+    right: 15px;
+}
+
+.account-btn {
+    right: 65px;
+}
+
+/* Account Page */
+#accountPage {
+    display: none;
+    padding: 40px 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#accountPage .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 /* 🌙 dark mode */
@@ -235,7 +259,7 @@ input[type="number"] {
 }
 
 .dark select,
-.dark input[type="number"] {
+.dark input {
     color: #4ade80;
     background: #2a2a2a;
 }
@@ -271,54 +295,72 @@ input[type="number"] {
 
 <body>
 
+<button id="accountToggle" class="account-btn" title="Account Settings">👤</button>
 <button id="themeToggle" class="theme-btn">🌙</button>
 
-<div class="container">
+<div id="mainPage">
+    <div class="container">
 
-<div class="left">
-<div class="panel">
+    <div class="left">
+    <div class="panel">
 
-<h2 id="selectedDate">Select a Date</h2>
+    <h2 id="selectedDate">Select a Date</h2>
 
-<label>Type:</label>
-<select id="type">
-<option value="weed">🌿 Smoke grass</option>
-<option value="water">💧 Drink water</option>
-</select>
+    <label>Type:</label>
+    <select id="type">
+    <option value="weed">🌿 Smoke grass</option>
+    <option value="water">💧 Drink water</option>
+    </select>
 
-<br><br>
+    <br><br>
 
-<label>Time:</label>
-<select id="hour"></select> :
-<select id="minute"></select>
+    <label>Time:</label>
+    <select id="hour"></select> :
+    <select id="minute"></select>
 
-<br><br>
+    <br><br>
 
-<label>Count:</label>
-<input type="number" id="count" value="1" min="1">
+    <label>Count:</label>
+    <input type="number" id="count" value="1" min="1">
 
-<br><br>
+    <br><br>
 
-<button onclick="saveRecord()">Save</button>
+    <button onclick="saveRecord()">Save</button>
 
-<hr>
+    <hr>
 
-<h3>Records</h3>
-<div id="records"></div>
+    <h3>Records</h3>
+    <div id="records"></div>
 
-<div class="timer" id="weedTimer"></div>
-<div class="timer" id="waterTimer"></div>
+    <div class="timer" id="weedTimer"></div>
+    <div class="timer" id="waterTimer"></div>
 
+    </div>
+    </div>
+
+    <div class="right">
+    <select id="monthSelect"></select>
+    <h3 id="monthTitle"></h3>
+    <div class="calendar-weekdays" id="calendarWeekdays"></div>
+    <div class="calendar" id="calendar"></div>
+    </div>
+
+    </div>
 </div>
-</div>
 
-<div class="right">
-<select id="monthSelect"></select>
-<h3 id="monthTitle"></h3>
-<div class="calendar-weekdays" id="calendarWeekdays"></div>
-<div class="calendar" id="calendar"></div>
-</div>
-
+<div id="accountPage">
+    <div class="panel">
+        <h2>Account Settings</h2>
+        <label>Name:</label>
+        <input type="text" id="accName" placeholder="Enter your name">
+        
+        <label>Email:</label>
+        <input type="email" id="accEmail" placeholder="Enter your email">
+        
+        <br>
+        <button onclick="saveAccountInfo()">Save Profile</button>
+        <button onclick="toggleAccountView()" style="background: #374151;">Back to Tracker</button>
+    </div>
 </div>
 
 <script>
@@ -501,6 +543,31 @@ function updateTimers(){
     updateTimer("water","waterTimer","💧");
 }
 
+function formatDurationKorean(totalMinutes){
+    if(totalMinutes <= 0) return "0분";
+
+    let days = Math.floor(totalMinutes / (60 * 24));
+    let hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+    let minutes = totalMinutes % 60;
+    let parts = [];
+
+    if(days) parts.push(`${days}일`);
+    if(hours) parts.push(`${hours}시간`);
+    if(minutes || parts.length === 0) parts.push(`${minutes}분`);
+
+    return parts.join(" ");
+}
+
+function getNextTargetMinutes(elapsedMinutes){
+    const fixedTargets = [6 * 60, 12 * 60, 18 * 60];
+
+    for (const target of fixedTargets) {
+        if (elapsedMinutes < target) return target;
+    }
+
+    return Math.floor(elapsedMinutes / (24 * 60) + 1) * 24 * 60;
+}
+
 function updateTimer(type,id,icon){
     let el=document.getElementById(id);
     let last=getLast(type);
@@ -513,14 +580,13 @@ function updateTimer(type,id,icon){
     
     el.classList.remove("no-records");
 
-    let diff=new Date()-last;
-    let d=Math.floor(diff/(1000*60*60*24));
-    let h=Math.floor(diff/(1000*60*60))%24;
-    let m=Math.floor(diff/(1000*60))%60;
+    let elapsedMinutes=Math.floor((new Date()-last)/(1000*60));
+    let targetMinutes=getNextTargetMinutes(elapsedMinutes);
+    let remainingMinutes=targetMinutes-elapsedMinutes;
+    let targetText=formatDurationKorean(targetMinutes);
 
-    el.textContent=`${icon} Last used: ${d}d ${h}h ${m}m ago`;
+    el.textContent=`${icon} 이제 ${formatDurationKorean(remainingMinutes)}만 더 참으면 ${targetText}이오`;
 }
-
 setInterval(updateTimers,1000);
 
 // 🌗 theme toggle
@@ -542,6 +608,40 @@ toggle.onclick=()=>{
         toggle.textContent="🌙";
     }
 };
+
+// 👤 Account View Toggle
+const mainPage = document.getElementById("mainPage");
+const accountPage = document.getElementById("accountPage");
+const accountToggle = document.getElementById("accountToggle");
+
+function toggleAccountView() {
+    if (accountPage.style.display === "none" || accountPage.style.display === "") {
+        accountPage.style.display = "block";
+        mainPage.style.display = "none";
+        loadAccountInfo();
+    } else {
+        accountPage.style.display = "none";
+        mainPage.style.display = "block";
+    }
+}
+
+accountToggle.onclick = toggleAccountView;
+
+// Save/Load Account Info
+function saveAccountInfo() {
+    const info = {
+        name: document.getElementById("accName").value,
+        email: document.getElementById("accEmail").value
+    };
+    localStorage.setItem("accountInfo", JSON.stringify(info));
+    alert("Profile saved!");
+}
+
+function loadAccountInfo() {
+    const info = JSON.parse(localStorage.getItem("accountInfo") || "{}");
+    document.getElementById("accName").value = info.name || "";
+    document.getElementById("accEmail").value = info.email || "";
+}
 
 // init
 generateCalendar();

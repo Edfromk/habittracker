@@ -216,13 +216,20 @@ input[type="number"] {
 .theme-btn, .account-btn {
     position: fixed;
     top: 15px;
-    background: #16a34a;
-    color: white;
-    border: none;
-    padding: 8px 10px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000000;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 6px;
     cursor: pointer;
     z-index: 999;
+    font-size: 20px;
+    line-height: 1;
 }
 
 .theme-btn {
@@ -231,6 +238,13 @@ input[type="number"] {
 
 .account-btn {
     right: 65px;
+}
+
+.account-btn::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z'/%3E%3C/svg%3E");
 }
 
 /* Account Page */
@@ -295,8 +309,8 @@ input[type="number"] {
 
 <body>
 
-<button id="accountToggle" class="account-btn" title="Account Settings">👤</button>
-<button id="themeToggle" class="theme-btn">🌙</button>
+<button id="accountToggle" class="account-btn" title="Account Settings" aria-label="Account Settings"></button>
+<button id="themeToggle" class="theme-btn">☾</button>
 
 <div id="mainPage">
     <div class="container">
@@ -602,10 +616,10 @@ toggle.onclick=()=>{
 
     if(document.documentElement.classList.contains("dark")){
         localStorage.setItem("theme","dark");
-        toggle.textContent="🌞";
+        toggle.textContent="☀";
     }else{
         localStorage.setItem("theme","light");
-        toggle.textContent="🌙";
+        toggle.textContent="☾";
     }
 };
 
